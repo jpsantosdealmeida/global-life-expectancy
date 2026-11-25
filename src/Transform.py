@@ -1,9 +1,6 @@
 import pandas as pd
-from pathlib import Path
 
-
-# Funções
-
+# Funções Transformações
 def classificacao_codigo(codigo):
     if pd.isna(codigo):
         return 'SEM_CODIGO'
@@ -17,61 +14,30 @@ def classificacao_codigo(codigo):
     else:
         return 'OUTRO'
     
-# 1. Leitura dos dados
-caminho_csv = Path().cwd() / 'data' / 'raw' / 'expectativa_de_vida.csv'
+def transformar_dados(dataframe_original):
 
-expect_vida_csv = pd.read_csv(caminho_csv)
+    dataframe_copia = dataframe_original.copy(deep=True)
+    # Limpando espaços nos nomes das colunas
+    dataframe_copia.columns = dataframe_copia.columns.str.strip()
 
-print("=== PRIMEIRAS LINHAS ===")
-print(expect_vida_csv.head())
-
-expect_vida_csv.columns = expect_vida_csv.columns.str.strip()
-
-# 2. Padronização das colunas
-expect_vida_csv = expect_vida_csv.rename(
+    # Alterando nomes das colunas
+    dataframe_copia = dataframe_copia.rename(
     columns={
         "Entity": "Entidade",
         "Code": "Codigo",
         "Year": "Ano",
         "Life expectancy": "Expectativa_Vida"
-    }
-)
+            }
+        )
 
-# Verificando tipagem 
-print("=== TIPAGEM DADOS ===")
-print(expect_vida_csv.dtypes)
+    dataframe_copia['Tipo_Codigo'] = dataframe_copia['Codigo'].apply(classificacao_codigo)
 
-# 3. Verificando menor valor de expectativa de vida e mairo
-print("=== MENOR E MAIOR VALOR  ===")
-menor_valor = expect_vida_csv['Expectativa_Vida'].min()
-maior_valor = expect_vida_csv['Expectativa_Vida'].max()
-print(f'MENOR -> {menor_valor}')
-print(f'MAIOR -> {maior_valor}')
-
-print("\n=== VERIFICACAO MENOR OU IGUAL A ZERO ===")
-quantidade_valores_nao_positivos = (expect_vida_csv['Expectativa_Vida'] <= 0).sum()
-print(quantidade_valores_nao_positivos)
-
-print("\n=== DADOS DOS VALORES EXTREMOS ===")
-print(expect_vida_csv.loc[(expect_vida_csv['Expectativa_Vida'] == menor_valor) | (expect_vida_csv['Expectativa_Vida'] == maior_valor)])
-
-
-print("\n=== VERIFICAÇÃO ANTES DA TRANSFORMAÇÃO ===")
-print(f'Qtd Registros: {len(expect_vida_csv)}')
-print(f'Valores Nulos: {expect_vida_csv.isna().sum()}')
-
-print("\n=== PÓS TRANSFORMAÇÃO ===")
-
-# df criação nova coluna aplicando a classificação
-expect_vida_csv['Tipo_Codigo'] = expect_vida_csv['Codigo'].apply(classificacao_codigo)
-
-print(f'\n{expect_vida_csv['Tipo_Codigo'].value_counts()}')
-print(f'\nValores Nulos: {expect_vida_csv.isna().sum()}')
-print(f'\nQtd Registros: {len(expect_vida_csv)}')
+    return dataframe_copia
 
 
 
-print(expect_vida_csv.head(10))
+
+
 
 
 
