@@ -1,0 +1,5 @@
+Entidade,Codigo,Ano,Expectativa_Vida,Tipo_Codigo
+Brazil,BRA,2021.0,72.8,POSSIVEL_ISO
+Brazil,BRA,,74.0,POSSIVEL_ISO
+Japan,JPN,2022.0,84.0,POSSIVEL_ISO
+World,OWID_WRL,2022.0,71.5,OWID
